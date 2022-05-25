@@ -1,0 +1,11 @@
+body{
+  background-image: url("frontend/images/login.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: #e6eaf2;
+  background-position: 50% 45%;
+  background-size: 100%;
+  color: #fff;
+  min-height: 100%;
+  font-family: Segoe UI,Segoe WP,Tahoma,Arial,sans-serif;
+}
