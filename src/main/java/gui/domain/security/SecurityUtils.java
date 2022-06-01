@@ -1,4 +1,4 @@
-package gui.security;
+package gui.domain.security;
 
 import java.util.stream.Stream;
 

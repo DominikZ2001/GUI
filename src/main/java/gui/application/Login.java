@@ -1,4 +1,4 @@
-package gui.pages;
+package gui.application;
 
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.dependency.CssImport;

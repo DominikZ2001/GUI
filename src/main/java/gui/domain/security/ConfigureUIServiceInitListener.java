@@ -1,4 +1,4 @@
-package gui.security;
+package gui.domain.security;
 
 import org.springframework.stereotype.Component;
 

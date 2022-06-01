@@ -1,4 +1,4 @@
-package gui.security;
+package gui.domain.security;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

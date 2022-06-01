@@ -1,0 +1,12 @@
+/package.json
+/frontend/**
+/target/**
+/.settings/**
+/node_modules/**
+/.npmrc
+/pnpmfile.js
+/pnpm-lock.yaml
+/tsconfig.json
+/types.d.ts
+/webpack.config.js
+/webpack.generated.js
