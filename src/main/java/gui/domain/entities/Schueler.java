@@ -2,19 +2,28 @@ package gui.domain.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "Schueler")
-public class Schueler extends Person
+@Entity(name = "schueler")
+@Table(name = "schueler")
+public class Schueler extends AEntity
 {
-	private static final long serialVersionUID = 5953910174373564970L;
+	private static final long serialVersionUID = 2328039783516311730L;
 
-	@Column(name = "anwesend")
+	@Column(name = "vorname", nullable = false)
+	private String vorname;
+
+	@Column(name = "nachname", nullable = false)
+	private String nachname;
+
+	@Column(name = "anwesend", nullable = false, columnDefinition = "boolean default false")
 	private boolean anwesened = false;
 
-	@Column(name = "klasse")
-	private String klasse;
+	@ManyToOne
+	@JoinColumn(name = "klasse", nullable = false)
+	private Klasse klasse;
 
 	public boolean isAnwesened()
 	{
@@ -26,14 +35,34 @@ public class Schueler extends Person
 		this.anwesened = anwesened;
 	}
 
-	public String getKlasse()
+	public Klasse getKlasse()
 	{
 		return klasse;
 	}
 
-	public void setKlasse(String klasse)
+	public void setKlasse(Klasse klasse)
 	{
 		this.klasse = klasse;
+	}
+
+	public String getVorname()
+	{
+		return vorname;
+	}
+
+	public void setVorname(String vorname)
+	{
+		this.vorname = vorname;
+	}
+
+	public String getNachname()
+	{
+		return nachname;
+	}
+
+	public void setNachname(String nachname)
+	{
+		this.nachname = nachname;
 	}
 
 }

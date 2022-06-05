@@ -4,8 +4,7 @@ body{
   background-attachment: fixed;
   background-color: #e6eaf2;
   background-position: 50% 45%;
-  background-size:contain;
-  background-size: 100%;
+  background-size:cover;
   color: #fff;
   min-height: 100%;
   font-family: Segoe UI,Segoe WP,Tahoma,Arial,sans-serif;

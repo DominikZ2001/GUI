@@ -1,64 +1,56 @@
 package gui.application;
 
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.Route;
 
-import gui.domain.entities.Schueler;
+import gui.application.content.Schuelerverwaltung;
+import gui.domain.entities.Klasse;
+import gui.domain.services.KlasseService;
+import gui.domain.services.SchuelerProviderService;
 
 @Route("")
-public class MainPage extends VerticalLayout
+public class MainPage extends AppLayout
 {
 	private static final long serialVersionUID = -6125224633763538070L;
 
-	public MainPage()
+	private KlasseService klasseService;
+
+	private SchuelerProviderService schuelerService;
+
+	public MainPage(KlasseService klasseService, SchuelerProviderService schuelerService)
 	{
-		getStyle().set("background-color", "white").set("opacity", "0.9");
-		setSizeFull();
+		super();
 
-		TextField temperatur = new TextField();
-		temperatur.setLabel("Temperatur");
-		temperatur.setValue("13.8°C");
-		temperatur.setReadOnly(true);
+		this.klasseService = klasseService;
+		this.schuelerService = schuelerService;
 
-		TextField luftfeuchtigkeit = new TextField();
-		luftfeuchtigkeit.setValue("56%");
-		luftfeuchtigkeit.setReadOnly(true);
-
-		TextField co2 = new TextField();
-		co2.setLabel("CO2 Gehalt");
-		co2.setValue("2%");
-		co2.setReadOnly(true);
-
-		VerticalLayout gridLayout = new VerticalLayout();
-
-		H2 gridHeader = new H2("BSFI 20A");
-		gridLayout.add(gridHeader);
-
-		Grid<Schueler> anwesenheit = new Grid<>(Schueler.class);
-		anwesenheit.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
-
-		// Columns
-		anwesenheit.addComponentColumn(s -> zentriert(s.getVorname())).setHeader(zentriert("Vorname"));
-		anwesenheit.addComponentColumn(s -> zentriert(s.getNachname())).setHeader(zentriert("Nachname"));
-		anwesenheit.addComponentColumn(s -> zentriert(s.isAnwesened() ? "Anwesend" : "Abwesend")).setHeader(zentriert("Anwesenheit"));
-		gridLayout.add(anwesenheit);
-
-		add(temperatur, luftfeuchtigkeit, co2, gridLayout);
-
+		createNavbar();
 	}
 
-	private VerticalLayout zentriert(String textString)
+	private void createNavbar()
 	{
-		VerticalLayout layout = new VerticalLayout();
-		layout.setJustifyContentMode(JustifyContentMode.CENTER);
-		Div text = new Div();
-		text.setText(textString);
-		layout.add(text);
-		return layout;
+		HorizontalLayout layout = new HorizontalLayout();
+		layout.getThemeList().add("padding");
+		layout.setSizeFull();
+		layout.setJustifyContentMode(JustifyContentMode.BETWEEN);
+		layout.setAlignItems(Alignment.CENTER);
+
+		H2 text = new H2("Bubatz");
+		text.getStyle().set("margin", "0px");
+
+		ComboBox<Klasse> klassen = new ComboBox<>();
+		klassen.setItems(klasseService.getAllKlassen());
+		klassen.setItemLabelGenerator(klasse -> klasse.getName());
+		klassen.addValueChangeListener(e -> setContent(new Schuelerverwaltung(e.getValue(), schuelerService)));
+		klassen.setValue(klasseService.getAllKlassen().get(0));
+
+		layout.add(text, klassen);
+
+		addToNavbar(layout);
 	}
 }

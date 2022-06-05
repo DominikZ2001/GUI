@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	protected void configure(HttpSecurity http) throws Exception
 	{
 		// CSRF wird von Vaadin behandelt
-		http.csrf().disable()
+		http.csrf().disable().headers().frameOptions().disable().and()
 			// Registriere RequestCache für gespeicherte Anfragen von einem nicht
 			// autorisierten Nutzer für redirection nach dem login
 			.requestCache().requestCache(new CustomRequestCache())
@@ -58,11 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 			.and().authorizeRequests()
 
 			// Weiterleitung durch Vaadin erlauben
-			.requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll().antMatchers("/**").permitAll()
-
-			// CSP
-			.and().headers().xssProtection().xssProtectionEnabled(true).and().contentSecurityPolicy(
-				"frame-ancestors 'none';form-action 'self';child-src 'self';frame-src 'self';prefetch-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval';");
+			.requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll().antMatchers("/**").permitAll();
 	}
 
 	@Bean
@@ -98,3 +94,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 			"/icons/**", "/frontend/images/**", "/styles/**");
 	}
 }
+// Passwortverschluesselung mit BCrypt
+//passwort = 1234567890
+//passwort = passwort
+//passwort = yasser
+//passwort = till
