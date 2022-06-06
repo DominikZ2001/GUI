@@ -25,6 +25,19 @@ public class Schueler extends AEntity
 	@JoinColumn(name = "klasse", nullable = false)
 	private Klasse klasse;
 
+	@Column(name = "bild", nullable = false, columnDefinition = "VARCHAR(12000)")
+	private String bild;
+
+	public String getBild()
+	{
+		return bild;
+	}
+
+	public void setBild(String bild)
+	{
+		this.bild = bild;
+	}
+
 	public boolean isAnwesened()
 	{
 		return anwesened;

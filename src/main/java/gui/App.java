@@ -19,6 +19,7 @@ import com.vaadin.flow.theme.Theme;
 @Theme(value = "schule")
 public class App extends SpringBootServletInitializer implements AppShellConfigurator
 {
+	private static final long serialVersionUID = 8000412176660488541L;
 
 	/**
 	 * Start

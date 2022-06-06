@@ -1,15 +1,19 @@
 package gui.application.content;
 
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Span;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import com.helger.commons.base64.Base64;
+import com.vaadin.flow.component.Unit;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.server.StreamResource;
 
 import gui.domain.entities.Klasse;
-import gui.domain.entities.Schueler;
 import gui.domain.services.SchuelerProviderService;
 import gui.presentation.ReadOnlyTextField;
+import gui.presentation.SchuelerGrid;
 
 public class Schuelerverwaltung extends VerticalLayout
 {
@@ -18,6 +22,8 @@ public class Schuelerverwaltung extends VerticalLayout
 	private Klasse klasse;
 
 	private SchuelerProviderService service;
+
+	private Image bild = new Image();
 
 	public Schuelerverwaltung(Klasse klasse, SchuelerProviderService service)
 	{
@@ -29,42 +35,66 @@ public class Schuelerverwaltung extends VerticalLayout
 		getStyle().set("background-color", "white").set("opacity", "0.9");
 		setSizeFull();
 
-		add(new ReadOnlyTextField("Temperatur", "13.8°C"), new ReadOnlyTextField("Luftfeuchtigkeit", "56%"),
-			new ReadOnlyTextField("CO2 Gehalt", "2%"), createSchuelerGrid());
+		HorizontalLayout bildUndArduinoDatenLayout = new HorizontalLayout();
+		bildUndArduinoDatenLayout.setWidthFull();
+		bildUndArduinoDatenLayout.setHeight(60, Unit.PERCENTAGE);
+
+		bildUndArduinoDatenLayout.add(schuelerBildLayout(), arduinoLayout());
+
+		add(bildUndArduinoDatenLayout, createSchuelerGrid());
 	}
 
-	private Grid<Schueler> createSchuelerGrid()
+	private SchuelerGrid createSchuelerGrid()
 	{
-		Grid<Schueler> anwesenheit = new Grid<>();
-		anwesenheit.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
-
-		// Columns
-		anwesenheit.addComponentColumn(schueler -> zentriert(new Span(schueler.getVorname()))).setHeader(zentriert(new Span("Vorname")));
-		anwesenheit.addComponentColumn(schueler -> zentriert(new Span(schueler.getNachname()))).setHeader(zentriert(new Span("Nachname")));
-
-		anwesenheit.setClassNameGenerator(schueler ->
-		{
-			if (schueler.isAnwesened())
-				return "anwesend";
-			else
-				return "abwesend";
-		});
+		SchuelerGrid anwesenheit = new SchuelerGrid();
+		anwesenheit.setWidthFull();
+		anwesenheit.setHeight(40, Unit.PERCENTAGE);
 
 		anwesenheit.setItems(service.getAllSchuelerByKlasse(klasse));
+
+		anwesenheit.addItemClickListener(e ->
+		{
+			bild.setSrc(new StreamResource("Bild vom Schüler", () ->
+			{
+				try
+				{
+					return new ByteArrayInputStream(Base64.decode(e.getItem().getBild()));
+				}
+				catch (IOException e1)
+				{
+					e1.printStackTrace();
+				}
+				return null;
+			}));
+		});
 
 		return anwesenheit;
 	}
 
-	private VerticalLayout zentriert(Component component)
+	private VerticalLayout arduinoLayout()
 	{
-		VerticalLayout layout = new VerticalLayout();
-		layout.setSizeFull();
-		layout.getThemeList().clear();
+		VerticalLayout arduinoLayout = new VerticalLayout();
+		arduinoLayout.setHeightFull();
+		arduinoLayout.setWidth(30, Unit.PERCENTAGE);
+		arduinoLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+		arduinoLayout.setAlignItems(Alignment.CENTER);
 
-		layout.setJustifyContentMode(JustifyContentMode.CENTER);
-		layout.setAlignItems(Alignment.CENTER);
-
-		layout.add(component);
-		return layout;
+		arduinoLayout.add(new ReadOnlyTextField("Temperatur", "13.8°C"), new ReadOnlyTextField("Luftfeuchtigkeit", "56%"),
+			new ReadOnlyTextField("CO2 Gehalt", "2%"));
+		return arduinoLayout;
 	}
+
+	private VerticalLayout schuelerBildLayout()
+	{
+		VerticalLayout schuelerBildLayout = new VerticalLayout();
+		schuelerBildLayout.setHeightFull();
+		schuelerBildLayout.setWidth(70, Unit.PERCENTAGE);
+		schuelerBildLayout.getStyle().set("border-radius", "15px").set("border", "1px solid black");
+
+		bild.setHeightFull();
+
+		schuelerBildLayout.add(bild);
+		return schuelerBildLayout;
+	}
+
 }
