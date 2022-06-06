@@ -13,10 +13,12 @@ import gui.domain.entities.Klasse;
 import gui.domain.services.KlasseService;
 import gui.domain.services.SchuelerProviderService;
 
-@Route("")
+@Route(MainPage.ROUTE)
 public class MainPage extends AppLayout
 {
 	private static final long serialVersionUID = -6125224633763538070L;
+
+	public static final String ROUTE = "/";
 
 	private KlasseService klasseService;
 

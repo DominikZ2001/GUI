@@ -17,6 +17,11 @@ public class SchuelerProviderService
 
 	public List<Schueler> getAllSchuelerByKlasse(Klasse klasse)
 	{
-		return schuelerRepository.findAll();
+		return schuelerRepository.getAllSchuelerByKlasse(klasse);
+	}
+
+	public void save(Schueler schueler)
+	{
+		schuelerRepository.save(schueler);
 	}
 }

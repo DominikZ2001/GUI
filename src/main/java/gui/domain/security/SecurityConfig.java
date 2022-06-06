@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+import gui.application.Login;
+import gui.application.MainPage;
 import gui.domain.security.logic.AdminService;
 
 /**
@@ -58,7 +60,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 			.and().authorizeRequests()
 
 			// Weiterleitung durch Vaadin erlauben
-			.requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll().antMatchers("/**").permitAll();
+			.requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
+
+			.and().formLogin().loginPage(Login.ROUTE).loginProcessingUrl(Login.ROUTE).failureForwardUrl(Login.ROUTE + "?error")
+			.successForwardUrl(MainPage.ROUTE)
+
+			.and().logout().logoutSuccessUrl(Login.ROUTE);
 	}
 
 	@Bean
