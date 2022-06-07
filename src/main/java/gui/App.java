@@ -21,7 +21,7 @@ public class App extends SpringBootServletInitializer implements AppShellConfigu
 {
 	private static final long serialVersionUID = 8000412176660488541L;
 
-	/**
+	/** Test
 	 * Start
 	 * 
 	 * @param args Programmargumente
