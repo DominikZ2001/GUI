@@ -1,5 +1,6 @@
 /package.json
-/frontend/**
+/frontend/generated/**
+/frontend/index.html
 /target/**
 /.settings/**
 /node_modules/**

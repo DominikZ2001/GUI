@@ -1,0 +1,7 @@
+* td.anwesend{
+	background-color : var(--lumo-success-color);
+}
+
+* td.abwesend{
+	background-color : var(--lumo-error-color);
+}
