@@ -27,12 +27,10 @@ import gui.domain.security.logic.AdminService;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
-
-	// private final UserService service;
-	private static final String PASSWORT_VERSCHLUESSELUNG = "{bcrypt}";
-
+	public static final String PASSWORT_VERSCHLUESSELUNG = "{bcrypt}";
+	
 	private AdminService service;
-
+	
 	/**
 	 * Konstruktor um User zu laden
 	 * 
@@ -43,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 		super();
 		this.service = service;
 	}
-
+	
 	/**
 	 * Konfiguration zum Login
 	 */
@@ -51,33 +49,38 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	protected void configure(HttpSecurity http) throws Exception
 	{
 		// CSRF wird von Vaadin behandelt
-		http.csrf().disable().headers().frameOptions().disable().and()
-			// Registriere RequestCache für gespeicherte Anfragen von einem nicht
-			// autorisierten Nutzer für redirection nach dem login
-			.requestCache().requestCache(new CustomRequestCache())
-
-			// Zugang verbieten
-			.and().authorizeRequests()
-
-			// Weiterleitung durch Vaadin erlauben
-			.requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
-
-			.and().formLogin().loginPage(Login.ROUTE).loginProcessingUrl(Login.ROUTE).failureForwardUrl(Login.ROUTE + "?error")
-			.successForwardUrl(MainPage.ROUTE)
-
-			.and().logout().logoutSuccessUrl(Login.ROUTE);
+		http.csrf().disable()
+				// Registriere RequestCache für gespeicherte Anfragen von einem nicht autorisierten Nutzer für redirection nach dem login
+				.requestCache().requestCache(new CustomRequestCache())
+				
+				// Zugang verbieten
+				.and().authorizeRequests()
+				
+				// Weiterleitung durch Vaadin erlauben
+				.requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
+				.anyRequest().authenticated()
+				
+				// login page
+				.and().formLogin()
+				.failureUrl(Login.ROUTE + "?error")
+				.loginProcessingUrl(Login.ROUTE).permitAll()
+				.loginPage(Login.ROUTE).permitAll()
+				.successForwardUrl(MainPage.ROUTE)
+				
+				// logout
+				.and().logout().logoutSuccessUrl(Login.ROUTE);
 	}
-
+	
 	@Bean
 	@Override
 	public UserDetailsService userDetailsService()
 	{
 		List<UserDetails> userDetails = service.getAllAdmins().stream()
-			.map(u -> User.builder().username(u.getUsername()).password(PASSWORT_VERSCHLUESSELUNG + u.getPassword()).build())
-			.collect(Collectors.toList());
+				.map(u -> User.withUserDetails(u).password(PASSWORT_VERSCHLUESSELUNG + u.getPassword()).build())
+				.collect(Collectors.toList());
 		return new InMemoryUserDetailsManager(userDetails);
 	}
-
+	
 	/**
 	 * Zugriff für nicht Authentifizierten Nutzer
 	 */
@@ -85,24 +88,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	public void configure(WebSecurity web)
 	{
 		web.ignoring().antMatchers(
-			// Client-side JS
-			"/VAADIN/**",
-
-			// standard favicon URI
-			"/favicon.ico",
-
-			// robots exclusion standard
-			"/robots.txt",
-
-			// web application manifest
-			"/manifest.webmanifest", "/sw.js", "/offline.html",
-
-			// icons and images
-			"/icons/**", "/frontend/images/**", "/styles/**");
+				// Client-side JS
+				"/VAADIN/**",
+				
+				// standard favicon URI
+				"/favicon.ico",
+				
+				// robots exclusion standard
+				"/robots.txt",
+				
+				// web application manifest
+				"/manifest.webmanifest", "/sw.js", "/offline.html",
+				
+				// icons and images
+				"/icons/**", "/frontend/images/**", "/styles/**");
 	}
 }
 // Passwortverschluesselung mit BCrypt
-//passwort = 1234567890
-//passwort = passwort
-//passwort = yasser
-//passwort = till
+// passwort = 1234567890
+// passwort = passwort
+// passwort = yasser
+// passwort = till

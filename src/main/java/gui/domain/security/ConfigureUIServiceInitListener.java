@@ -7,6 +7,9 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 
+import gui.application.Login;
+import gui.application.MainPage;
+
 /**
  * Service zum festellen, ob der User die benötigten Berechtigungen hat
  * 
@@ -37,6 +40,9 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
 	 */
 	private void authenticateNavigation(BeforeEnterEvent event)
 	{
+		if (SecurityUtils.isUserLoggedIn()
+				&& event.getNavigationTarget().equals(Login.class))
+			event.rerouteTo(MainPage.class);
 		
 	}
 }
