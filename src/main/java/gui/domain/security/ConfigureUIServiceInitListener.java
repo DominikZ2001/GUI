@@ -42,7 +42,7 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
 	{
 		if (SecurityUtils.isUserLoggedIn()
 				&& event.getNavigationTarget().equals(Login.class))
-			event.rerouteTo(MainPage.class);
+			event.getUI().getPage().setLocation(MainPage.ROUTE);
 		
 	}
 }
